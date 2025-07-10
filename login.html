@@ -1,0 +1,452 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login System</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, lab(65.99% 0.14 -41.25) 0%, hsl(246, 37%, 46%) 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: #fffffff2;
+            border-radius: 20px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(10px);
+            padding: 40px;
+            width: 100%;
+            max-width: 400px;
+            transition: all 0.3s ease;
+        }
+
+        .container:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+        }
+
+        .page {
+            display: none;
+        }
+
+        .page.active {
+            display: block;
+            animation: fadeIn 0.5s ease-in-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        h2 {
+            text-align: center;
+            margin-bottom: 30px;
+            color: #4a5568;
+            font-size: 28px;
+            font-weight: 600;
+        }
+
+        .logo {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .logo-icon {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, lab(65.99% 0.14 -41.25) 0%, hsl(246, 37%, 46%) 100%);
+            border-radius: 50%;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 32px;
+            color: white;
+            font-weight: bold;
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+            position: relative;
+        }
+
+        label {
+            display: block;
+            font-size: 14px;
+            font-weight: 500;
+            margin-bottom: 8px;
+            color: #4a5568;
+        }
+
+        input {
+            width: 100%;
+            padding: 15px;
+            font-size: 16px;
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            transition: all 0.3s ease;
+            background: #f8fafc;
+        }
+
+        input:focus {
+            border-color: #667eea;
+            outline: none;
+            background: white;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .btn {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(135deg, lab(65.99% 0.14 -41.25) 0%, hsl(246, 37%, 46%) 100%);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-bottom: 20px;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
+        }
+
+        .btn:active {
+            transform: translateY(0);
+        }
+
+        .link-button {
+            background: transparent;
+            color: #667eea;
+            text-decoration: underline;
+            border: none;
+            cursor: pointer;
+            font-size: 14px;
+            padding: 5px;
+        }
+
+        .link-button:hover {
+            color: #764ba2;
+        }
+
+        .text-center {
+            text-align: center;
+        }
+
+        .success-message {
+            background: linear-gradient(135deg, #48bb78 0%, #38a169 100%);
+            color: white;
+            padding: 15px;
+            border-radius: 12px;
+            text-align: center;
+            margin-bottom: 20px;
+            font-weight: 500;
+        }
+
+        .nav-buttons {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .nav-btn {
+            flex: 1;
+            padding: 10px;
+            background: #e2e8f0;
+            color: #4a5568;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .nav-btn.active {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .current-username {
+            background: #f0f4f8;
+            padding: 15px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            text-align: center;
+            color: #4a5568;
+            font-weight: 500;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 480px) {
+            .container {
+                padding: 30px 20px;
+                margin: 10px;
+            }
+
+            h2 {
+                font-size: 24px;
+            }
+
+            .logo-icon {
+                width: 60px;
+                height: 60px;
+                font-size: 24px;
+            }
+
+            input, .btn {
+                padding: 12px;
+                font-size: 14px;
+            }
+        }
+
+        @media (max-width: 320px) {
+            .container {
+                padding: 20px 15px;
+            }
+
+            .nav-buttons {
+                flex-direction: column;
+            }
+        }
+
+        .welcome-page {
+            text-align: center;
+        }
+
+        .welcome-message {
+            font-size: 24px;
+            color: #4a5568;
+            margin-bottom: 20px;
+        }
+
+        .username-display {
+            font-size: 20px;
+            font-weight: bold;
+            color: #667eea;
+            margin-bottom: 30px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Login Page -->
+        <div id="loginPage" class="page active">
+            <div class="logo-icon">
+    <img src="photo.png" alt="Logo" height="40">
+</div>
+
+            <h2>Welcome Back</h2>
+            <form id="loginForm">
+                <div class="form-group">
+                    <label for="username">Username</label>
+                    <input type="text" id="username" name="username" placeholder="Enter your username" required>
+                </div>
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" name="password" placeholder="Enter your password" required>
+                </div>
+                <button type="submit" class="btn">Sign In</button>
+            </form>
+            <div class="text-center">
+                <p>Don't have an account? <button class="link-button" onclick="showPage('registerPage')">Register here</button></p>
+                <!-- <p><button class="link-button" onclick="showPage('settingsPage')">Settings</button></p> -->
+            </div>
+        </div>
+
+        <!-- Registration Page -->
+        <div id="registerPage" class="page">
+            <div class="logo-icon" style="text-align: center;">
+    <img src="photo.png" alt="Logo" height="50">
+</div>
+            <h2>Create Account</h2>
+            <form id="registerForm">
+                <div class="form-group">
+                    <label for="regUsername">Username</label>
+                    <input type="text" id="regUsername" name="username" placeholder="Choose a username" required>
+                </div>
+                <div class="form-group">
+                    <label for="regEmail">Email</label>
+                    <input type="email" id="regEmail" name="email" placeholder="Enter your email" required>
+                </div>
+                <div class="form-group">
+                    <label for="regPassword">Password</label>
+                    <input type="password" id="regPassword" name="password" placeholder="Create a password" required>
+                </div>
+                <div class="form-group">
+                    <label for="confirmPassword">Confirm Password</label>
+                    <input type="password" id="confirmPassword" name="confirmPassword" placeholder="Confirm your password" required>
+                </div>
+                <button type="submit" class="btn">Create Account</button>
+            </form>
+            <div class="text-center">
+                <p>Already have an account? <button class="link-button" onclick="showPage('loginPage')">Login here</button></p>
+            </div>
+        </div>
+
+    
+
+        </div>
+
+        
+    </div>
+
+    <script>
+        // Initialize app
+        document.addEventListener('DOMContentLoaded', function() {
+            loadSavedUsername();
+            setupEventListeners();
+        });
+
+        function setupEventListeners() {
+            // Login form
+            document.getElementById('loginForm').addEventListener('submit', function(e) {
+                e.preventDefault();
+                handleLogin();
+            });
+
+            // Registration form
+            document.getElementById('registerForm').addEventListener('submit', function(e) {
+                e.preventDefault();
+                handleRegistration();
+            });
+
+            
+        }
+
+        function showPage(pageId) {
+            // Hide all pages
+            const pages = document.querySelectorAll('.page');
+            pages.forEach(page => page.classList.remove('active'));
+
+            // Show selected page
+            document.getElementById(pageId).classList.add('active');
+
+            // Update username displays when showing relevant pages
+            if (pageId === 'settingsPage' || pageId === 'indexPage') {
+                updateUsernameDisplays();
+            }
+        }
+
+        function handleLogin() {
+    const username = document.getElementById('username').value;
+    const password = document.getElementById('password').value;
+
+    if (username && password) {
+        // Save user info
+        window.currentUser = { username: username };
+        localStorage.setItem('savedUsername', username);
+
+        // Show popup and redirect if confirmed
+        if (confirm("Login successful! Do you want to go to the Dashboard?")) {
+            window.location.href = "index.html";  // ✅ Redirect to your dashboard
+        }
+    } else {
+        alert("Please enter both username and password.");
+    }
+}
+
+
+        function handleRegistration() {
+            const username = document.getElementById('regUsername').value;
+            const email = document.getElementById('regEmail').value;
+            const password = document.getElementById('regPassword').value;
+            const confirmPassword = document.getElementById('confirmPassword').value;
+
+            if (password !== confirmPassword) {
+                alert('Passwords do not match!');
+                return;
+            }
+
+            if (username && email && password) {
+                // Save user data
+                window.currentUser = { username: username, email: email };
+                localStorage.setItem('savedUsername', username);
+                
+                // Show success and redirect to login
+                alert('Account created successfully! Please login.');
+                showPage('loginPage');
+                
+                // Pre-fill login form
+                document.getElementById('username').value = username;
+            }
+        }
+
+        function handleUsernameUpdate() {
+            const newUsername = document.getElementById('newUsername').value;
+            
+            if (newUsername.trim()) {
+                // Update current user
+                if (window.currentUser) {
+                    window.currentUser.username = newUsername;
+                }
+                
+                // Save to localStorage
+                localStorage.setItem('savedUsername', newUsername);
+                
+                // Update login form
+                document.getElementById('username').value = newUsername;
+                
+                // Update displays
+                updateUsernameDisplays();
+                
+                // Clear form
+                document.getElementById('newUsername').value = '';
+                
+                // Show success message
+                alert('Username updated successfully!');
+            }
+        }
+
+        function loadSavedUsername() {
+            const savedUsername = localStorage.getItem('savedUsername');
+            if (savedUsername) {
+                document.getElementById('username').value = savedUsername;
+                window.currentUser = { username: savedUsername };
+                updateUsernameDisplays();
+            }
+        }
+
+        function updateUsernameDisplays() {
+            const username = window.currentUser ? window.currentUser.username : localStorage.getItem('savedUsername') || 'Not set';
+            
+            // Update settings page display
+            // const currentUsernameDisplay = document.getElementById('currentUsernameDisplay');
+            // if (currentUsernameDisplay) {
+            //     currentUsernameDisplay.textContent = username;
+            // }
+            
+            // Update dashboard display
+            // const dashboardUsername = document.getElementById('dashboardUsername');
+            // if (dashboardUsername) {
+            //     dashboardUsername.textContent = username;
+            // }
+        }
+
+        // function logout() {
+        //     window.currentUser = null;
+        //     document.getElementById('username').value = '';
+        //     document.getElementById('password').value = '';
+        //     showPage('loginPage');
+        // }
+
+        // Add some smooth scrolling and responsive behavior
+        window.addEventListener('resize', function() {
+            // Handle any responsive adjustments if needed
+        });
+    </script>
+</body>
+</html>

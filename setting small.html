@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Account Settings</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            color: white;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            font-weight: 300;
+            margin-bottom: 8px;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .header p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+
+        .settings-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 30px;
+            max-width: 1200px;
+            width: 100%;
+        }
+
+        .card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+        }
+
+        .card-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #e3f2fd;
+        }
+
+        .card-icon {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, #1976d2, #42a5f5);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 15px;
+            color: white;
+            font-size: 1.2rem;
+        }
+
+        .card h2 {
+            color: #1565c0;
+            font-size: 1.4rem;
+            font-weight: 600;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #424242;
+            font-size: 0.95rem;
+        }
+
+        input {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid #e1f5fe;
+            border-radius: 12px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            background: #fafafa;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: #1976d2;
+            background: white;
+            box-shadow: 0 0 0 3px rgba(25, 118, 210, 0.1);
+        }
+
+        .pin-inputs {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            margin: 20px 0;
+        }
+
+        .pin-digit {
+            width: 50px;
+            height: 50px;
+            text-align: center;
+            font-size: 1.5rem;
+            font-weight: bold;
+            border: 2px solid #e1f5fe;
+            border-radius: 12px;
+            background: #fafafa;
+            transition: all 0.3s ease;
+        }
+
+        .pin-digit:focus {
+            border-color: #1976d2;
+            background: white;
+            box-shadow: 0 0 0 3px rgba(25, 118, 210, 0.1);
+        }
+
+        .btn {
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(135deg, #1976d2, #42a5f5);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 10px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn:hover {
+            background: linear-gradient(135deg, #1565c0, #1e88e5);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(25, 118, 210, 0.3);
+        }
+
+        .btn:active {
+            transform: translateY(0);
+        }
+
+        .message {
+            margin-top: 15px;
+            padding: 12px;
+            border-radius: 8px;
+            font-weight: 500;
+            text-align: center;
+            transition: all 0.3s ease;
+            opacity: 0;
+            transform: translateY(-10px);
+        }
+
+        .message.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .message.success {
+            background: #e8f5e8;
+            color: #2e7d32;
+            border: 1px solid #c8e6c9;
+        }
+
+        .message.error {
+            background: #ffebee;
+            color: #c62828;
+            border: 1px solid #ffcdd2;
+        }
+
+        .strength-meter {
+            height: 6px;
+            background: #e0e0e0;
+            border-radius: 3px;
+            margin-top: 8px;
+            overflow: hidden;
+        }
+
+        .strength-fill {
+            height: 100%;
+            transition: all 0.3s ease;
+            border-radius: 3px;
+        }
+
+        .strength-weak { 
+            background: linear-gradient(90deg, #f44336, #ff7043);
+            width: 33%;
+        }
+
+        .strength-medium { 
+            background: linear-gradient(90deg, #ff9800, #ffb74d);
+            width: 66%;
+        }
+
+        .strength-strong { 
+            background: linear-gradient(90deg, #4caf50, #66bb6a);
+            width: 100%;
+        }
+
+        @media (max-width: 768px) {
+            .settings-grid {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+            
+            .header h1 {
+                font-size: 2rem;
+            }
+            
+            .card {
+                padding: 25px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>Account Settings</h1>
+        <p>Manage your account security and preferences</p>
+    </div>
+
+    <div class="settings-grid">
+        <!-- Username Change Card -->
+        <div class="card">
+            <div class="card-header">
+                <div class="card-icon">👤</div>
+                <h2>Change Username</h2>
+            </div>
+            <div class="form-group">
+                <label for="newUsername">New Username:</label>
+                <input type="text" id="newUsername" placeholder="Enter new username">
+            </div>
+            <button class="btn" onclick="changeUsername()">Update Username</button>
+            <div class="message" id="usernameMessage"></div>
+        </div>
+
+        <!-- Password Reset Card -->
+        <div class="card">
+            <div class="card-header">
+                <div class="card-icon">🔒</div>
+                <h2>Reset Password</h2>
+            </div>
+            <div class="form-group">
+                <label for="newPassword">New Password:</label>
+                <input type="password" id="newPassword" placeholder="Enter new password" oninput="checkPasswordStrength()">
+                <div class="strength-meter">
+                    <div class="strength-fill" id="strengthFill"></div>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="confirmPassword">Confirm Password:</label>
+                <input type="password" id="confirmPassword" placeholder="Confirm new password">
+            </div>
+            <button class="btn" onclick="resetPassword()">Reset Password</button>
+            <div class="message" id="passwordMessage"></div>
+        </div>
+
+        <!-- PIN Change Card -->
+        <!-- <div class="card">
+            <div class="card-header">
+                <div class="card-icon">🔢</div>
+                <h2>Change 4-Digit PIN</h2>
+            </div>
+            <div class="form-group">
+                <label>Enter New PIN:</label>
+                <div class="pin-inputs">
+                    <input type="text" class="pin-digit" maxlength="1" oninput="moveToPinNext(this, 0)" onkeydown="handlePinBackspace(this, 0)">
+                    <input type="text" class="pin-digit" maxlength="1" oninput="moveToPinNext(this, 1)" onkeydown="handlePinBackspace(this, 1)">
+                    <input type="text" class="pin-digit" maxlength="1" oninput="moveToPinNext(this, 2)" onkeydown="handlePinBackspace(this, 2)">
+                    <input type="text" class="pin-digit" maxlength="1" oninput="moveToPinNext(this, 3)" onkeydown="handlePinBackspace(this, 3)">
+                </div>
+            </div>
+            <div class="form-group">
+                <label>Confirm PIN:</label>
+                <div class="pin-inputs">
+                    <input type="text" class="pin-digit" maxlength="1" oninput="moveToPinNext(this, 4)" onkeydown="handlePinBackspace(this, 4)">
+                    <input type="text" class="pin-digit" maxlength="1" oninput="moveToPinNext(this, 5)" onkeydown="handlePinBackspace(this, 5)">
+                    <input type="text" class="pin-digit" maxlength="1" oninput="moveToPinNext(this, 6)" onkeydown="handlePinBackspace(this, 6)">
+                    <input type="text" class="pin-digit" maxlength="1" oninput="moveToPinNext(this, 7)" onkeydown="handlePinBackspace(this, 7)">
+                </div>
+            </div>
+            <button class="btn" onclick="changePin()">Update PIN</button>
+            <div class="message" id="pinMessage"></div>
+        </div>
+    </div> -->
+
+    <script>
+        function showMessage(elementId, message, isSuccess = true) {
+            const messageEl = document.getElementById(elementId);
+            messageEl.textContent = message;
+            messageEl.className = `message show ${isSuccess ? 'success' : 'error'}`;
+            
+            setTimeout(() => {
+                messageEl.classList.remove('show');
+            }, 5000);
+        }
+
+        function changeUsername() {
+            const newUsername = document.getElementById("newUsername").value.trim();
+            
+            if (newUsername === "") {
+                showMessage("usernameMessage", "Username cannot be empty!", false);
+                return;
+            }
+            
+            if (newUsername.length < 3) {
+                showMessage("usernameMessage", "Username must be at least 3 characters long!", false);
+                return;
+            }
+            
+            showMessage("usernameMessage", "Username updated successfully!");
+            document.getElementById("newUsername").value = "";
+        }
+
+        function checkPasswordStrength() {
+            const password = document.getElementById("newPassword").value;
+            const strengthFill = document.getElementById("strengthFill");
+            
+            let strength = 0;
+            if (password.length >= 8) strength++;
+            if (/[A-Z]/.test(password)) strength++;
+            if (/[0-9]/.test(password)) strength++;
+            if (/[^A-Za-z0-9]/.test(password)) strength++;
+            
+            strengthFill.className = "strength-fill";
+            if (strength >= 4) {
+                strengthFill.classList.add("strength-strong");
+            } else if (strength >= 2) {
+                strengthFill.classList.add("strength-medium");
+            } else if (strength >= 1) {
+                strengthFill.classList.add("strength-weak");
+            } else {
+                strengthFill.style.width = "0%";
+            }
+        }
+
+        function resetPassword() {
+            const newPassword = document.getElementById("newPassword").value;
+            const confirmPassword = document.getElementById("confirmPassword").value;
+
+            if (newPassword === "" || confirmPassword === "") {
+                showMessage("passwordMessage", "Please fill in both password fields!", false);
+                return;
+            }
+
+            if (newPassword.length < 8) {
+                showMessage("passwordMessage", "Password must be at least 8 characters long!", false);
+                return;
+            }
+
+            if (newPassword !== confirmPassword) {
+                showMessage("passwordMessage", "Passwords do not match!", false);
+                return;
+            }
+
+            showMessage("passwordMessage", "Password reset successfully!");
+            document.getElementById("newPassword").value = "";
+            document.getElementById("confirmPassword").value = "";
+            document.getElementById("strengthFill").style.width = "0%";
+        }
+
+        function moveToPinNext(current, index) {
+            // Only allow digits
+            current.value = current.value.replace(/[^0-9]/g, '');
+            
+            // Move to next input if current is filled
+            if (current.value.length === 1 && index < 7) {
+                const pinInputs = document.querySelectorAll('.pin-digit');
+                pinInputs[index + 1].focus();
+            }
+        }
+
+        function handlePinBackspace(current, index) {
+            // Handle backspace key
+            if (event.key === 'Backspace' && current.value === '' && index > 0) {
+                const pinInputs = document.querySelectorAll('.pin-digit');
+                pinInputs[index - 1].focus();
+            }
+        }
+
+        function changePin() {
+            const pinInputs = document.querySelectorAll('.pin-digit');
+            const newPin = Array.from(pinInputs.slice(0, 4)).map(input => input.value).join('');
+            const confirmPin = Array.from(pinInputs.slice(4, 8)).map(input => input.value).join('');
+
+            if (newPin.length !== 4 || confirmPin.length !== 4) {
+                showMessage("pinMessage", "Please enter a complete 4-digit PIN!", false);
+                return;
+            }
+
+            if (newPin !== confirmPin) {
+                showMessage("pinMessage", "PINs do not match!", false);
+                return;
+            }
+
+            showMessage("pinMessage", "PIN updated successfully!");
+            
+            // Clear all PIN inputs
+            pinInputs.forEach(input => input.value = "");
+        }
+    </script>
+</body>
+</html>
